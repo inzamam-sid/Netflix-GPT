@@ -1,18 +1,16 @@
 import { useState } from 'react'
+import Body from './components/Body'
 
-import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-     <div className="text-3xl font-bold text-green-800">
-      Welcome to Netflix GPT 🎬
-     </div>
+   
+     <Body />
         
-      
-    </>
+     
+   
   )
 }
 
