@@ -1,11 +1,15 @@
 import React, { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 import Header from './Header'
 import { checkValidateData } from '../utils/validate';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import { auth } from "../utils/firebase";
  
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   const name = useRef(null);
   const email = useRef(null);
@@ -13,13 +17,57 @@ const Login = () => {
 
   const handleButtonClick = () => {
     // Validate the form data
-
     // console.log(email.current.value);
     // console.log(password.current.value);
-    const message = checkValidateData(email.current.value, password.current.value, name.current.value);
-    // console.log(message);
+    const message = checkValidateData(
+      email.current.value,
+      password.current.value, 
+      //name.current.value
+    );
     setErrorMessage(message);
-  }
+
+    if(message) return;
+      
+    if(!isSignInForm) {
+      // Sign Up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      ).then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        navigate('/browse');
+      })
+      .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+
+    }else {
+      // Sign In Logic
+      signInWithEmailAndPassword(
+        auth, 
+        email.current.value,
+        password.current.value
+      )
+       .then((userCredential) => {
+    // Signed in 
+          const user = userCredential.user;
+          console.log(user);
+          navigate('/browse');
+        })
+        .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    setErrorMessage(errorCode + "-" + errorMessage);
+         });
+    }
+
+    
+  };
 
   const toggleSignInForm = () => {
       setIsSignInForm(!isSignInForm);
