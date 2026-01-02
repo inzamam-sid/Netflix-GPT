@@ -28,11 +28,12 @@ const Body = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
-        const {uid, email, displayName} = user;
+        const {uid, email, displayName, photoURL} = user;
         dispatch(addUser({
           uid: uid,
           email: email,
-          displayName: displayName
+          displayName: displayName,
+          photoURL: photoURL
         }))
         //navigate('/browse');
       } else {
